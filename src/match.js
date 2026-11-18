@@ -12,7 +12,7 @@ export function nearestRoad(graph, indices) {
     matched, indices, gaps: [] };
 }
 
-export function hmmMatch(graph, indices, { sigma = 20, beta = 30, candidates = 4 } = {}) {
+export function hmmMatch(graph, indices, { sigma = 20, beta = 30, candidates = 8, jitter = 15 } = {}) {
   const layers = indices.map(i => graph.candidates(graph.trackXY[i], candidates));
   const emission = c => -0.5 * (c.distance / sigma) ** 2;
   let scores = layers[0].map(emission);
@@ -32,8 +32,11 @@ export function hmmMatch(graph, indices, { sigma = 20, beta = 30, candidates = 4
       previous.forEach((p, j) => {
         const search = searches.get(graph.arcs[p.id][1]);
         let length = Infinity, connector = null;
-        if (p.id === c.id && c.fraction >= p.fraction) {
-          length = (c.fraction - p.fraction) * graph.lengths[c.id]; connector = [];
+        const progress = (c.fraction - p.fraction) * graph.lengths[c.id];
+        if (p.id === c.id && progress >= -jitter) {
+          // A short backwards GPS projection can be noise while a vehicle is stopped.
+          // Signed progress penalizes this explanation against the observed displacement.
+          length = progress; connector = [];
         }
         const between = search.distances.get(graph.arcs[c.id][0]);
         if (between !== undefined) {
@@ -79,6 +82,21 @@ export function hmmMatch(graph, indices, { sigma = 20, beta = 30, candidates = 4
   return { route, matched, indices, gaps };
 }
 
+export function orderedF1(predicted, reference) {
+  // Longest common subsequence counts repeated visits only when they align in order.
+  const lengths = new Uint32Array(reference.length + 1);
+  for (const arc of predicted) {
+    let diagonal = 0;
+    for (let j = 1; j <= reference.length; j++) {
+      const above = lengths[j];
+      lengths[j] = arc === reference[j - 1] ? diagonal + 1 : Math.max(above, lengths[j - 1]);
+      diagonal = above;
+    }
+  }
+  return predicted.length + reference.length
+    ? 2 * lengths[reference.length] / (predicted.length + reference.length) : 1;
+}
+
 export function evaluate(graph, prediction, reference) {
   if (reference.some(id => !Number.isInteger(id) || !graph.arcs[id])) throw new Error('Invalid reference arc ID');
   function overlap(key) {
@@ -92,6 +110,7 @@ export function evaluate(graph, prediction, reference) {
   }
   return {
     directed: overlap(id => id), physicalRoad: overlap(id => graph.physicalKey(id)),
+    orderedF1: orderedF1(prediction.route, reference),
     disconnectedSteps: broken(prediction.route), referenceDisconnectedSteps: broken(reference),
     routeArcs: prediction.route.length, referenceArcs: reference.length,
     restartCount: prediction.gaps.length,

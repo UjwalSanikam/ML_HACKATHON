@@ -6,6 +6,8 @@
   "type": "module",
   "engines": { "node": ">=20" },
   "scripts": {
+    "showcase": "node scripts/showcase.js",
+    "benchmark": "node scripts/benchmark.js",
     "audit": "node src/cli.js audit",
     "demo": "node src/cli.js run --id 00000046",
     "evaluate": "node src/cli.js evaluate",

@@ -14,7 +14,8 @@ for (let i = 0; i < args.length; i += 2) {
 const root = options.data || DEFAULT_DATA, out = options.out || 'outputs';
 const stride = Number(options.stride || 5);
 if (!Number.isInteger(stride) || stride < 1) throw new Error('--stride must be a positive integer');
-const parameters = { sigma: Number(options.sigma || 20), beta: Number(options.beta || 30), candidates: Number(options.candidates || 4) };
+const parameters = { sigma: Number(options.sigma || 20), beta: Number(options.beta || 30), candidates: Number(options.candidates || 8), jitter: Number(options.jitter ?? 15) };
+if (!Number.isFinite(parameters.jitter) || parameters.jitter < 0) throw new Error('--jitter must be a nonnegative distance in meters');
 if (!(parameters.sigma > 0 && parameters.beta > 0 && Number.isInteger(parameters.candidates) && parameters.candidates > 0)) {
   throw new Error('sigma and beta must be positive; candidates must be a positive integer');
 }
@@ -86,7 +87,7 @@ if (command === 'audit') {
     const rows = trips.map(t => t.results.find(r => r.method === method));
     const mean = fn => rows.reduce((sum, r) => sum + fn(r), 0) / rows.length;
     return { method, macroDirectedF1: mean(r => r.metrics.directed.f1), macroPhysicalF1: mean(r => r.metrics.physicalRoad.f1),
-      meanMatchSeconds: mean(r => r.seconds), totalDisconnectedSteps: rows.reduce((sum, r) => sum + r.metrics.disconnectedSteps, 0) };
+      macroOrderedF1: mean(r => r.metrics.orderedF1), meanMatchSeconds: mean(r => r.seconds), totalDisconnectedSteps: rows.reduce((sum, r) => sum + r.metrics.disconnectedSteps, 0) };
   });
   writeJson(path.join(out, 'evaluation-' + subset + '.json'), { subset, stride, parameters, tripCount: trips.length, means, trips });
   console.log(JSON.stringify(means, null, 2));
@@ -94,5 +95,5 @@ if (command === 'audit') {
   const ids = options.id ? [options.id] : tripIds(root, 'student_test');
   for (const id of ids) runTrip('student_test', id, false);
 } else {
-  console.log('Commands: audit | run --id 00000046 | evaluate --subset validation | predict\nOptions: --data "Student folder" --out outputs --stride 5 --sigma 20 --beta 30 --candidates 4\nEvaluation: --limit N. Predictions never load student_test .route files.');
+  console.log('Commands: audit | run --id 00000046 | evaluate --subset validation | predict\nOptions: --data "Student folder" --out outputs --stride 5 --sigma 20 --beta 30 --candidates 8 --jitter 15\nEvaluation: --limit N. Predictions never load student_test .route files.');
 }

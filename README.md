@@ -2,6 +2,12 @@
 
 Recover a vehicle's road route from noisy GPS observations using the supplied directed road graph. This hackathon starter includes a nearest-road baseline, a Hidden Markov Model (HMM) matcher, trip-level evaluation, and offline interactive reports.
 
+## Try the demo
+
+Open [the synthetic demo](docs/showcase.html) locally after cloning, or download the HTML file from GitHub. It runs offline in a browser. Switch on the baseline layer and move the Observation slider to GPS row 21. The GPS drifts toward the parallel street. Compare the raw blue position, pink matched position and green reference road. Use Fit trip to reset the view.
+
+Run `npm run showcase` to regenerate the fictional trip, or follow the steps below to run the same report on the organizer's data.
+
 ## Quick start
 
 Requires **Node.js 20 or newer** (`node --version`). There are no third-party runtime dependencies and no API keys.
@@ -22,7 +28,7 @@ npm run audit
 npm run demo
 ```
 
-Open `outputs/train/00000046/report.html` in your browser. The report supports pan, zoom, and toggling the GPS observations, reference, baseline, and HMM layers. It contains its own data and needs no internet connection. The report JavaScript was syntax-checked; the development browser blocked local-file preview, so visual inspection remains pending.
+Open `outputs/train/00000046/report.html` in your browser. The report supports pan, zoom, and toggling the GPS observations, reference, baseline, and HMM layers. It contains its own data and needs no internet connection. Play the trip or scrub through observations to see the raw and matched positions. Use Inspect next restart to center the map on a gap.
 
 ```text
 project/
@@ -94,7 +100,7 @@ Student-test includes `.route` files, but their intended role is unclear. **The 
 Both methods use the same sampled GPS observations: every fifth row by default, always including the first and last. `--stride 1` uses every observation; stride counts rows, not seconds. Coordinates are projected to an approximate local plane in meters using the first road node as origin.
 
 - **Baseline:** project each observation onto its nearest road segment. Distance ties between opposite directions use arc ID order; this baseline has no heading or connectivity logic. Remove consecutive duplicate arc IDs. It does not fill gaps between matched observations.
-- **HMM:** consider the nearest four distinct physical segments, retaining their directed alternatives. Score candidates by GPS-to-segment distance (Gaussian noise scale `sigma=20` meters). Score transitions by the difference between road travel distance and observed straight-line displacement (`beta=30` meters). Directed shortest paths provide travel distances and connecting arcs. Viterbi decoding selects a sequence, and connecting paths reconstruct the route.
+- **HMM:** consider the nearest eight distinct physical segments, retaining their directed alternatives. Score candidates by GPS-to-segment distance (Gaussian noise scale `sigma=20` meters). Score transitions by the difference between road travel distance and observed straight-line displacement (`beta=30` meters). Directed shortest paths provide travel distances and connecting arcs. Viterbi decoding selects a sequence, and connecting paths reconstruct the route.
 
 Candidate searches expand from 50 meters to at most 6.4 kilometers. Shortest-path searches are bounded to `max(500, 4 × GPS displacement + 200)` meters. If an entire step has no feasible candidate transition, the matcher explicitly restarts and records a gap. Timestamp values are not used to enforce speed limits because their unit is unconfirmed.
 
@@ -113,14 +119,21 @@ Precision is intersection size divided by predicted set size; recall divides by 
 
 Trips are sorted by ID; every fifth trip, starting at index zero, is assigned to validation (16 trips). The other 64 are for development. This split is deterministic but is not guaranteed to separate overlapping geographic areas.
 
-First validation run, fixed defaults, no parameter search:
+Results on the fixed 16-trip validation split
 
-| Method | Mean directed F1 | Mean physical-road F1 | Total disconnected steps |
-| --- | ---: | ---: | ---: |
-| Nearest-road baseline | 50.12% | 67.30% | 2,791 |
-| HMM | 94.65% | 95.92% | 65 |
+| Method | Mean directed F1 | Mean physical-road F1 | Mean ordered F1 | Total disconnected steps |
+| --- | ---: | ---: | ---: | ---: |
+| Nearest-road baseline | 50.12% | 67.30% | 45.63% | 2,791 |
+| Original HMM | 94.65% | 95.92% | 92.93% | 65 |
+| Updated HMM | 96.02% | 97.00% | 95.52% | 11 |
 
-These are local validation results, not official scores. The HMM's 65 disconnected steps occur in six trips; it still needs improvement before claiming all predictions are continuous routes. Some restarts occur on a repeated arc and do not create a disconnected pair in the deduplicated route. Runtime depends on the machine and excludes report rendering.
+These are local validation results, not official scores. Ten of the eleven remaining disconnected steps are on trip 00000043. One occurs on trip 00000075. Some restarts occur on a repeated arc and do not create a disconnected pair in the deduplicated route. Runtime depends on the machine and excludes report rendering.
+
+## Reproduce the comparison
+
+Run `npm run benchmark` with the organizer data extracted. The script ranks four configurations by mean ordered F1 across 64 development trips. It evaluates the development winner and original settings on the 16 validation trips previously used to report the original model. Full results and trip IDs are written to `outputs/benchmark.json`.
+
+Ordered F1 equals twice the length of the longest common subsequence of directed arc IDs divided by the combined lengths of the predicted and reference sequences. It penalizes missing, extra and out-of-order visits. In development, allowing up to 15 meters of backward projection on the same arc raised ordered F1 from 88.54% to 92.27%. Considering eight nearby segments raised it to 93.98%. Sampling every third observation with those settings scored 92.29%, so we retained every fifth observation. On validation, the selected matcher took about 31 milliseconds per trip on the development machine, compared with about 14 milliseconds for the original matcher, excluding graph construction.
 
 ## Team workflow
 
