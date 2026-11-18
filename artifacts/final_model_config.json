@@ -18,6 +18,6 @@
     "reg_alpha": 2.3568581603700394,
     "min_split_gain": 0.5320415651853762
   },
-  "hpo_seconds_this_run": 2697.3683042919997,
+  "hpo_seconds_this_run": 2.080000001125626e-07,
   "total_trial_seconds": 2697.1341419999994
 }
