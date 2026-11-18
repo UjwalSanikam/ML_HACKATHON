@@ -206,7 +206,7 @@ def main():
                      reference=pt.trip.route, network_arcs=near, title=f"{part}/{tid}: raw data", obs_step=2)
         m.save(str(config.MAPS / f"eda_{part}_{tid}.html"))
 
-    world = folium.Map(location=[30, 10], zoom_start=2, tiles="cartodbpositron")
+    world = folium.Map(location=[30, 10], zoom_start=2, tiles="OpenStreetMap")
     for _, r in df.iterrows():
         folium.CircleMarker([r.lat_c, r.lon_c], radius=5, color=colors[r.partition], fill=True,
                             tooltip=f"{r.partition}/{r.trip_id}: {r.n_obs} obs, {r.path_length_km:.1f} km").add_to(world)
