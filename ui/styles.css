@@ -65,3 +65,6 @@ pre#log { margin: 0; padding: 10px; font: 12px/1.5 ui-monospace, Menlo, monospac
 .legend i { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
 .leaflet-control-layers { background: rgba(22,29,37,.92) !important; color: var(--text) !important; border: 0 !important; }
 @media (max-width: 1100px) { main { grid-template-columns: 210px 1fr; } #right { display: none; } }
+
+/* dark basemap built from OSM tiles */
+.tiles-dark { filter: invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6); }

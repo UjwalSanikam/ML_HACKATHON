@@ -12,10 +12,11 @@ function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
 // ---------------- map ----------------
 const map = L.map("map", { zoomControl: true, preferCanvas: true }).setView([20, 0], 2);
-const dark = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-  { attribution: "&copy; OpenStreetMap &copy; CARTO", maxZoom: 20 }).addTo(map);
-const light = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  { attribution: "&copy; OpenStreetMap", maxZoom: 19 });
+// OpenStreetMap tiles (reachable on networks that block other tile CDNs); the dark
+// style is the same tiles with a CSS filter.
+const OSM = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const dark = L.tileLayer(OSM, { attribution: "&copy; OpenStreetMap", maxZoom: 19, className: "tiles-dark" }).addTo(map);
+const light = L.tileLayer(OSM, { attribution: "&copy; OpenStreetMap", maxZoom: 19 });
 const layers = {
   gps: L.layerGroup().addTo(map),
   matched: L.layerGroup(),
