@@ -1,0 +1,11 @@
+node_modules/
+Student folder/
+*.zip
+*.mp4
+.hackathon_review/
+outputs/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

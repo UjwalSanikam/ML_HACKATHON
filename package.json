@@ -1,0 +1,15 @@
+{
+  "name": "gps-route-recovery",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Map matching noisy GPS tracks onto directed road graphs",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "audit": "node src/cli.js audit",
+    "demo": "node src/cli.js run --id 00000046",
+    "evaluate": "node src/cli.js evaluate",
+    "predict": "node src/cli.js predict",
+    "test": "node --test"
+  }
+}
