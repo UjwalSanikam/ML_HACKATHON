@@ -16,6 +16,3 @@ legacy_js_prototype/outputs/
 /Problem Statement.mp4
 /*.pdf
 /*.zip
-# large reproducible model files (rebuild with: python scripts/03_train_compare.py --only RandomForest ExtraTrees --skip-cv)
-artifacts/models/RandomForest.joblib
-artifacts/models/ExtraTrees.joblib
