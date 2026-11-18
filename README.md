@@ -11,7 +11,19 @@ The system runs on two laptops:
 * **Laptop 2** runs a browser UI that only talks to the API.
 
 <!-- RESULTS-START -->
-## Headline results (10 student-test trips, means over trips)
+## Final inference accuracy (deployed system, 10 unseen evaluator-test trips)
+
+Measured through the live two-laptop deployment: the FastAPI backend on Laptop 1 and the UI on Laptop 2, means over trips. Raw scores are in `results/evaluator_test_results.csv` and `.json`.
+
+| Pipeline | Observation accuracy | Route F1 (length-weighted) | Ordered route F1 | Continuity | Time per trip |
+|---|---|---|---|---|---|
+| LightGBM classifier only | 93.9% | – | – | – | – |
+| **LightGBM + HMM/Viterbi (final)** | **95.8%** | **0.988** | **0.940** | **100%** | **0.69 s** |
+
+* **Generalisation.** Accuracy on the unseen evaluator trips (95.83%) matches student-test (95.76%), so the model does not overfit the development data.
+* **Range.** Per-trip accuracy runs from 86.5% (trip 00000030) to 100% (trip 00000049).
+
+## Development results (10 student-test trips, means over trips)
 
 | Pipeline | Observation top-1 | Route F1 (length-weighted) | Ordered route F1 | Continuity |
 |---|---|---|---|---|
