@@ -8,8 +8,8 @@
 - CV top-1 per fold: 0.9089, 0.8828, 0.9216, 0.8807, 0.9131
 - Student-test: top-1 0.9138, macro F1 0.9512, precision 0.9511, recall 0.9514, log loss 0.0574370062257265
 - Over/under-fitting evidence: train top-1 0.9579 vs CV 0.9014 vs test 0.9138 (gap train-CV = +0.0565)
-- Classifier-only route continuity: 0.9774
-- Training time 4.8 s; inference 30.6 ms / 1000 obs
+- Classifier-only route continuity: 0.9772
+- Training time 17.7 s; inference 90.2 ms / 1000 obs
 - Through the tuned HMM: top-1 0.9212 -> 0.9568; route F1 0.8340 -> 0.9909
 
 ## XGBoost  (Boosting)
@@ -20,8 +20,8 @@
 - CV top-1 per fold: 0.9081, 0.8800, 0.9208, 0.8824, 0.9155
 - Student-test: top-1 0.9117, macro F1 0.9500, precision 0.9499, recall 0.9502, log loss 0.0584689205239129
 - Over/under-fitting evidence: train top-1 0.9560 vs CV 0.9014 vs test 0.9117 (gap train-CV = +0.0547)
-- Classifier-only route continuity: 0.9767
-- Training time 3.5 s; inference 8.8 ms / 1000 obs
+- Classifier-only route continuity: 0.9764
+- Training time 3.1 s; inference 8.4 ms / 1000 obs
 - Through the tuned HMM: top-1 0.9199 -> 0.9566; route F1 0.8302 -> 0.9911
 
 ## LogisticRegression  (Linear / probabilistic)
@@ -32,8 +32,8 @@
 - CV top-1 per fold: 0.9056, 0.8805, 0.9107, 0.8778, 0.9158
 - Student-test: top-1 0.8890, macro F1 0.9372, precision 0.9370, recall 0.9373, log loss 0.0775016775370552
 - Over/under-fitting evidence: train top-1 0.9002 vs CV 0.8981 vs test 0.8890 (gap train-CV = +0.0021)
-- Classifier-only route continuity: 0.9772
-- Training time 0.8 s; inference 0.8 ms / 1000 obs
+- Classifier-only route continuity: 0.9770
+- Training time 2.3 s; inference 2.0 ms / 1000 obs
 - Through the tuned HMM: top-1 0.9007 -> 0.9408; route F1 0.8290 -> 0.9904
 
 ## HistGradientBoosting  (Boosting)
@@ -128,8 +128,8 @@
 - CV top-1 per fold: 0.8691, 0.8446, 0.8856, 0.8249, 0.8782
 - Student-test: top-1 0.8453, macro F1 0.9124, precision 0.9122, recall 0.9125, log loss 0.5700748397695714
 - Over/under-fitting evidence: train top-1 0.8629 vs CV 0.8605 vs test 0.8453 (gap train-CV = +0.0024)
-- Classifier-only route continuity: 0.9583
-- Training time 0.9 s; inference 15.4 ms / 1000 obs
+- Classifier-only route continuity: 0.9578
+- Training time 0.9 s; inference 15.3 ms / 1000 obs
 - Through the tuned HMM: top-1 0.8547 -> 0.9323; route F1 0.7253 -> 0.9840
 
 ## NearestRoad (baseline)  (Heuristic)

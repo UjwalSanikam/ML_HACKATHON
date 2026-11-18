@@ -43,6 +43,7 @@ All numbers are reproducible with `./run_all.sh`.
 | `scripts/05_hmm_eval.py` | HMM decoder tuning, classifier-only vs HMM comparison, Folium prediction maps |
 | `scripts/06_figures.py` | All comparison plots, confusion matrices and real training histories |
 | `scripts/07_report_assets.py` | Static map exports and auto-generated markdown tables for the report |
+| `scripts/08_collect_eval.py` | Saves per-trip scores from a running API (`--api http://<laptop1-ip>:8000`) to `results/<partition>_results.csv` / `.json` |
 | `api/main.py` | FastAPI backend (Laptop 1) |
 | `ui/` | Evaluator interface (Laptop 2): `index.html`, `app.js`, `styles.css`, `serve.py` |
 | `artifacts/` | `final_model.joblib`, `final_model_config.json`, `hmm_config.json`, `models/` (every compared model), `fold_models/` |

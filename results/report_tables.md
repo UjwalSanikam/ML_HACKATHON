@@ -4,9 +4,9 @@
 
 | model | family | config | cv_macro_f1 | cv_macro_f1_std | cv_top1 | test_top1 | test_macro_f1 | test_precision | test_recall | test_log_loss | route_continuity | train_time_s | infer_ms_per_1k_obs |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| LightGBM | Boosting | 400 trees, lr=0.05, 63 leaves (untuned) | 0.9451 | 0.0088 | 0.9014 | 0.9138 | 0.9512 | 0.9511 | 0.9514 | 0.0574 | 0.9774 | 4.8496 | 30.6295 |
-| XGBoost | Boosting | 400 trees, lr=0.05, depth=7, hist | 0.9451 | 0.0091 | 0.9014 | 0.9117 | 0.9500 | 0.9499 | 0.9502 | 0.0585 | 0.9767 | 3.5333 | 8.7715 |
-| LogisticRegression | Linear / probabilistic | StandardScaler + L2, C=1.0 | 0.9432 | 0.0082 | 0.8981 | 0.8890 | 0.9372 | 0.9370 | 0.9373 | 0.0775 | 0.9772 | 0.7691 | 0.7917 |
+| LightGBM | Boosting | 400 trees, lr=0.05, 63 leaves (untuned) | 0.9451 | 0.0088 | 0.9014 | 0.9138 | 0.9512 | 0.9511 | 0.9514 | 0.0574 | 0.9772 | 17.6948 | 90.1796 |
+| XGBoost | Boosting | 400 trees, lr=0.05, depth=7, hist | 0.9451 | 0.0091 | 0.9014 | 0.9117 | 0.9500 | 0.9499 | 0.9502 | 0.0585 | 0.9764 | 3.0523 | 8.4435 |
+| LogisticRegression | Linear / probabilistic | StandardScaler + L2, C=1.0 | 0.9432 | 0.0082 | 0.8981 | 0.8890 | 0.9372 | 0.9370 | 0.9373 | 0.0775 | 0.9770 | 2.2520 | 1.9781 |
 | HistGradientBoosting | Boosting | lr=0.1, max_iter=300, max_leaf_nodes=31 | 0.9424 | 0.0082 | 0.8967 | 0.9026 | 0.9449 | 0.9447 | 0.9450 | 0.0644 | 0.9743 | 1.8791 | 4.7467 |
 | RandomForest | Ensemble (bagging) | 300 trees, max_depth=20, min_leaf=10, sqrt features | 0.9424 | 0.0077 | 0.8966 | 0.8979 | 0.9422 | 0.9421 | 0.9423 | 0.0626 | 0.9751 | 97.9466 | 25.5993 |
 | MLP | Neural network | 128-64 ReLU, Adam lr=1e-3, early stopping, 50% obs | 0.9422 | 0.0087 | 0.8964 | 0.9042 | 0.9458 | 0.9457 | 0.9460 | 0.0666 | 0.9763 | 6.2285 | 1.6980 |
@@ -14,7 +14,7 @@
 | ExtraTrees | Ensemble (bagging) | 300 trees, max_depth=22, min_leaf=10 | 0.9419 | 0.0078 | 0.8957 | 0.8890 | 0.9372 | 0.9370 | 0.9373 | 0.0669 | 0.9748 | 14.5859 | 25.6922 |
 | DecisionTree | Tree-based | max_depth=12, min_samples_leaf=50 | 0.9393 | 0.0084 | 0.8913 | 0.8888 | 0.9370 | 0.9369 | 0.9372 | 0.0811 | 0.9705 | 7.7832 | 0.3754 |
 | KNN | Instance-based | k=40, distance-weighted, standardised, 25% obs | 0.9369 | 0.0092 | 0.8871 | 0.8793 | 0.9316 | 0.9315 | 0.9318 | 0.0940 | 0.9714 | 0.0279 | 554.9700 |
-| GaussianNB | Linear / probabilistic | QuantileTransformer(normal) + GaussianNB | 0.9216 | 0.0115 | 0.8605 | 0.8453 | 0.9124 | 0.9122 | 0.9125 | 0.5701 | 0.9583 | 0.9122 | 15.4069 |
+| GaussianNB | Linear / probabilistic | QuantileTransformer(normal) + GaussianNB | 0.9216 | 0.0115 | 0.8605 | 0.8453 | 0.9124 | 0.9122 | 0.9125 | 0.5701 | 0.9578 | 0.8896 | 15.2948 |
 | NearestRoad (baseline) | Heuristic | argmin perpendicular distance | 0.7534 | 0.0395 | 0.5688 | 0.5362 | 0.7368 | 0.7367 | 0.7369 | N/A | 0.9169 | 0.0000 | 0.0015 |
 
 
@@ -39,8 +39,8 @@
 
 | model | cv_macro_f1 | cv_macro_f1_std | cv_top1 | cv_log_loss | test_top1 | test_macro_f1 | test_log_loss | test_precision | test_recall | train_time_s | infer_ms_per_1k_obs |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| lightgbm_untuned | 0.9451 | 0.0088 | 0.9014 | 0.0661 | 0.9138 | 0.9512 | 0.0574 | 0.9511 | 0.9514 | 5.6511 | 35.0468 |
-| lightgbm_tuned | 0.9471 | 0.0085 | 0.9048 | 0.0691 | 0.9099 | 0.9491 | 0.0615 | 0.9489 | 0.9492 | 14.1816 | 100.1968 |
+| lightgbm_untuned | 0.9451 | 0.0088 | 0.9014 | 0.0661 | 0.9138 | 0.9512 | 0.0574 | 0.9511 | 0.9514 | 4.5487 | 28.8236 |
+| lightgbm_tuned | 0.9471 | 0.0085 | 0.9048 | 0.0691 | 0.9099 | 0.9491 | 0.0615 | 0.9489 | 0.9492 | 13.2945 | 98.9733 |
 
 
 Best hyperparameters:
