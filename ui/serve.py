@@ -20,7 +20,10 @@ args = ap.parse_args()
 
 handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(Path(__file__).parent))
 url = f"http://localhost:{args.port}/" + (f"?api={args.api}" if args.api else "")
-with socketserver.TCPServer(("0.0.0.0", args.port), handler) as httpd:
+# Threaded so one slow or stuck browser connection cannot block the whole UI.
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+socketserver.ThreadingTCPServer.daemon_threads = True
+with socketserver.ThreadingTCPServer(("0.0.0.0", args.port), handler) as httpd:
     print(f"PathSnap UI on {url}")
     if not args.no_browser:
         webbrowser.open(url)
