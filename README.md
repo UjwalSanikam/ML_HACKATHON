@@ -52,7 +52,7 @@ All numbers are reproducible with `./run_all.sh`.
 
 ## Installation
 
-Requires Python 3.9 or newer. On macOS, LightGBM and XGBoost also need OpenMP: `brew install libomp`.
+Use Python 3.12 for the pinned dependencies. On macOS, LightGBM and XGBoost also need OpenMP: `brew install libomp`.
 
 ```bash
 python3 -m venv .venv
@@ -60,7 +60,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-The data is not committed. Put the organiser's `Student folder` next to the repository (`../Student folder/train`, `../Student folder/student_test`). To keep it somewhere else, set `export PATHSNAP_DATA=/path/to/Student\ folder`.
+On Windows PowerShell, from the repository root:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts/smoke_api.py
+```
+
+Extract the organiser's `Student folder` into the repository root or place it next to the repository. For another location set `PATHSNAP_DATA` (PowerShell example: `$env:PATHSNAP_DATA = 'D:\data\Student folder'`). The smoke check uses the shipped model on the 10 student-test trips and saves its API log and aggregate scores under `outputs/smoke/`.
 
 ## Reproducing every result
 
@@ -71,6 +80,20 @@ The data is not committed. Put the organiser's `Student folder` next to the repo
 The script runs the tests and then scripts 01 to 07 in order, taking about 1.5 to 2 hours on an 8-core laptop, mostly model CV and Bayesian optimisation. Every number in the report is written to `results/` by these scripts. Seeds are fixed at 42.
 
 ## Deployment: two-laptop evaluation
+
+For Windows PowerShell, run the following from the repo root on Laptop 1:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn api.main:app --host 0.0.0.0 --port 8000
+```
+
+On Laptop 2, replace the example IP with Laptop 1's LAN address:
+
+```powershell
+.\.venv\Scripts\python.exe ui/serve.py --port 8080 --api http://192.168.1.20:8000
+```
+
+Confirm `GET /trips` and the UI both show `evaluator_test` with ten trips before starting the final demo. The UI loads Leaflet and map tiles from the internet. See [the submission evidence guide](docs/SUBMISSION_EVIDENCE.md) for the report sections and screenshot checklist.
 
 ### Laptop 1: API
 

@@ -1,6 +1,6 @@
 # Data folder (not committed)
 
-By default the code reads the organiser data from `../Student folder` (next to this repository).
+By default the code looks for `Student folder` inside the repository, then next to it.
 Set `PATHSNAP_DATA` to point anywhere else. Expected layout:
 
 ```

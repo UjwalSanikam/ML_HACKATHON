@@ -11,6 +11,11 @@ data/*
 !data/README.md
 # legacy JS outputs
 legacy_js_prototype/outputs/
+/outputs/
+/.hackathon_review/
+/Problem Statement.mp4
+/*.pdf
+/*.zip
 # large reproducible model files (rebuild with: python scripts/03_train_compare.py --only RandomForest ExtraTrees --skip-cv)
 artifacts/models/RandomForest.joblib
 artifacts/models/ExtraTrees.joblib

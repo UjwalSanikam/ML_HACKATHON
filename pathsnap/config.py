@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # Raw data location. Override with the PATHSNAP_DATA environment variable.
 # Expected layout:  <DATA_ROOT>/<partition>/<trip_id>/<trip_id>.{track,nodes,arcs,route}
-DATA_ROOT = Path(os.environ.get("PATHSNAP_DATA", ROOT.parent / "Student folder"))
+_local_data = ROOT / "Student folder"
+_default_data = _local_data if _local_data.is_dir() else ROOT.parent / "Student folder"
+DATA_ROOT = Path(os.environ.get("PATHSNAP_DATA", _default_data))
 
 # Partition folder names inside DATA_ROOT.
 TRAIN = "train"
