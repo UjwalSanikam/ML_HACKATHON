@@ -1,11 +1,16 @@
-node_modules/
-Student folder/
-*.zip
-*.mp4
-.hackathon_review/
-outputs/
-.env
-.env.*
-!.env.example
+# environments / caches
+.venv/
+__pycache__/
+*.pyc
+.cache/
+.pytest_cache/
 .DS_Store
-Thumbs.db
+# raw organiser data is never committed
+Student folder/
+data/*
+!data/README.md
+# legacy JS outputs
+legacy_js_prototype/outputs/
+# large reproducible model files (rebuild with: python scripts/03_train_compare.py --only RandomForest ExtraTrees --skip-cv)
+artifacts/models/RandomForest.joblib
+artifacts/models/ExtraTrees.joblib

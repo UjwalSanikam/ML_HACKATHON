@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PathSnap Evaluator</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 18c3-8 7 2 10-6s5-4 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="4" cy="18" r="2.3" fill="currentColor"/><circle cx="20" cy="6" r="2.3" fill="currentColor"/></svg>
+    <div><b>PathSnap</b><span>GPS map-matching · classifier + HMM/Viterbi</span></div>
+  </div>
+  <div class="conn">
+    <label for="api">API</label>
+    <input id="api" spellcheck="false" placeholder="http://192.168.x.x:8000">
+    <button id="connect">Connect</button>
+    <span id="status" class="pill off">disconnected</span>
+  </div>
+</header>
+
+<main>
+  <aside id="left">
+    <div class="section-title">Evaluation trips <span id="partition" class="muted"></span></div>
+    <div id="trips" class="trips"><div class="muted pad">Connect to the API to load trips.</div></div>
+    <button id="runall" class="wide" disabled>Evaluate all trips</button>
+    <div class="section-title">Model</div>
+    <div id="modelinfo" class="muted small pad">–</div>
+  </aside>
+
+  <section id="center">
+    <div id="map"></div>
+    <div id="busy" class="busy hidden"><div class="spinner"></div><div id="busytext">Running pipeline…</div></div>
+  </section>
+
+  <aside id="right">
+    <div class="section-title">Results <span id="tripname" class="muted"></span></div>
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="k_acc">–</div><div class="l">Observation accuracy<br><small>classifier + HMM</small></div></div>
+      <div class="kpi"><div class="v" id="k_f1">–</div><div class="l">Route F1<br><small>length weighted</small></div></div>
+      <div class="kpi"><div class="v" id="k_ord">–</div><div class="l">Ordered route F1<br><small>LCS based</small></div></div>
+      <div class="kpi"><div class="v" id="k_cont">–</div><div class="l">Route continuity</div></div>
+    </div>
+    <div class="section-title">Classifier only vs + HMM</div>
+    <div id="compare" class="compare muted small">–</div>
+    <div class="section-title">Pipeline timing</div>
+    <div id="timing" class="timing muted small">–</div>
+    <div class="section-title">Details</div>
+    <table id="details" class="details"></table>
+  </aside>
+</main>
+
+<section id="bottom">
+  <div class="tabs">
+    <button class="tab active" data-tab="batch">All-trip evaluation</button>
+    <button class="tab" data-tab="log">API request log</button>
+  </div>
+  <div id="tab-batch" class="tabbody">
+    <table id="batch" class="batch"><thead><tr>
+      <th>Trip</th><th>Obs</th><th>Clf top-1</th><th>HMM top-1</th><th>Route F1</th><th>Ordered F1</th><th>Continuity</th><th>Segments</th><th>Time (s)</th>
+    </tr></thead><tbody><tr><td colspan="9" class="muted">Press “Evaluate all trips”.</td></tr></tbody></table>
+  </div>
+  <div id="tab-log" class="tabbody hidden"><pre id="log"></pre></div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

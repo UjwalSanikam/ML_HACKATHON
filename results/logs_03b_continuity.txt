@@ -1,0 +1,13 @@
+                     model  route_continuity
+0   NearestRoad (baseline)          0.916903
+1       LogisticRegression          0.977214
+2               GaussianNB          0.958267
+3                      KNN          0.971418
+4             DecisionTree          0.970494
+5             RandomForest          0.975132
+6               ExtraTrees          0.974766
+7     HistGradientBoosting          0.974348
+8                 LightGBM          0.977372
+9                  XGBoost          0.976718
+10  LinearSVM_RBF_Nystroem          0.976024
+11                     MLP          0.976296

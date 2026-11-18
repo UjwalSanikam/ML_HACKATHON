@@ -1,0 +1,23 @@
+{
+  "model": "lightgbm",
+  "objective": "mean 5-fold GroupKFold macro F1 (candidate level, reliable labels)",
+  "sampler": "TPE (multivariate, seed 42, 10 startup trials)",
+  "pruner": "MedianPruner",
+  "n_trials": 50,
+  "n_complete": 49,
+  "n_pruned": 1,
+  "best_value": 0.9470509994422361,
+  "best_params": {
+    "n_estimators": 950,
+    "learning_rate": 0.09898176156647576,
+    "num_leaves": 201,
+    "min_child_samples": 25,
+    "subsample": 0.6192726807936171,
+    "colsample_bytree": 0.5991896677732862,
+    "reg_lambda": 0.0018881262880778734,
+    "reg_alpha": 2.3568581603700394,
+    "min_split_gain": 0.5320415651853762
+  },
+  "hpo_seconds_this_run": 2697.3683042919997,
+  "total_trial_seconds": 2697.1341419999994
+}

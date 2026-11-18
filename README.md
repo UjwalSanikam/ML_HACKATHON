@@ -1,161 +1,152 @@
-# GPS Route Recovery
+# PathSnap: map-matching and route reconstruction
 
-Recover a vehicle's road route from noisy GPS observations using the supplied directed road graph. This hackathon starter includes a nearest-road baseline, a Hidden Markov Model (HMM) matcher, trip-level evaluation, and offline interactive reports.
+PathSnap takes noisy GPS trajectories and matches them to a directed road network. It works in two stages:
 
-## Try the demo
+1. A **candidate classifier** scores every nearby directed road arc for every GPS fix.
+2. An **HMM with Viterbi decoding** combines those scores with road-network connectivity to rebuild one continuous route.
 
-Open [the synthetic demo](docs/showcase.html) locally after cloning, or download the HTML file from GitHub. It runs offline in a browser. Switch on the baseline layer and move the Observation slider to GPS row 21. The GPS drifts toward the parallel street. Compare the raw blue position, pink matched position and green reference road. Use Fit trip to reset the view.
+The system runs on two laptops:
 
-Run `npm run showcase` to regenerate the fictional trip, or follow the steps below to run the same report on the organizer's data.
+* **Laptop 1** runs a FastAPI backend with the trained model, the decoder and the road networks.
+* **Laptop 2** runs a browser UI that only talks to the API.
 
-## Quick start
+<!-- RESULTS-START -->
+## Headline results (10 student-test trips, means over trips)
 
-Requires **Node.js 20 or newer** (`node --version`). There are no third-party runtime dependencies and no API keys.
+| Pipeline | Observation top-1 | Route F1 (length-weighted) | Ordered route F1 | Continuity |
+|---|---|---|---|---|
+| Nearest road (no learning) | 55.9% | 0.604 | – | 98.6% |
+| HMM with distance-only emissions (no classifier) | 91.0% | 0.982 | 0.934 | 99.99% |
+| LightGBM classifier only | 92.0% | 0.838 | 0.478 | 98.3% |
+| **LightGBM + HMM/Viterbi, tuned (final)** | **95.8%** | **0.991** | **0.969** | **99.99%** |
 
-1. Clone the team's repository and open a terminal in its root:
+* **Model comparison.** 11 classifiers from 7 algorithm families plus a heuristic baseline, scored by 5-fold GroupKFold CV over the 80 training trips: `results/model_comparison.csv` and `results/figures/models_*.png`.
+* **Model selection.** LightGBM had the best CV macro F1 (0.9451, tied with XGBoost at 0.9451) and the best student-test top-1 (91.4%).
+* **Bayesian optimisation.** 50 Optuna TPE trials raised CV macro F1 to 0.9471. On student-test the tuned classifier alone was not better (91.0% vs 91.4% top-1). After HMM decoding the tuned model is marginally ahead (95.76% vs 95.68%). Details: `results/bayes_opt_tuned_vs_untuned.csv` and `results/figures/bayes_opt_lightgbm*.png`.
+* **HMM decoder tuning.** 40 TPE trials on 32 training trips using out-of-fold emissions (student-test not used). The objective rose from 0.940 to 0.965.
+* **Speed.** About 0.1–2.5 s per trip end to end on a laptop.
 
-   ```sh
-   git clone https://github.com/UjwalSanikam/ML_HACKATHON.git
-   cd ML_HACKATHON
+All numbers are reproducible with `./run_all.sh`.
+<!-- RESULTS-END -->
+
+---
+
+## Repository layout
+
+| Folder / file | What it contains |
+|---|---|
+| `pathsnap/` | Core library: IO and cleaning (`io.py`), local projection (`geo.py`), road network with KD-tree and bounded Dijkstra (`network.py`), label alignment (`labels.py`), candidate generation and features (`features.py`), model zoo (`models.py`), HMM/Viterbi (`hmm.py`), metrics (`metrics.py`), end-to-end inference (`pipeline.py`), Folium helpers (`viz.py`) |
+| `scripts/01_eda.py` | Dataset exploration: inventory, missing values, gaps, network connectivity, plots, Folium maps |
+| `scripts/02_build_dataset.py` | Candidate generation, feature extraction and label derivation for train and student-test |
+| `scripts/03_train_compare.py` | Trains and compares 11 models plus a heuristic baseline (5-fold GroupKFold CV, then student-test) |
+| `scripts/04_bayes_opt.py` | Bayesian hyperparameter optimisation (Optuna TPE) of the selected model; exports the final model |
+| `scripts/05_hmm_eval.py` | HMM decoder tuning, classifier-only vs HMM comparison, Folium prediction maps |
+| `scripts/06_figures.py` | All comparison plots, confusion matrices and real training histories |
+| `scripts/07_report_assets.py` | Static map exports and auto-generated markdown tables for the report |
+| `api/main.py` | FastAPI backend (Laptop 1) |
+| `ui/` | Evaluator interface (Laptop 2): `index.html`, `app.js`, `styles.css`, `serve.py` |
+| `artifacts/` | `final_model.joblib`, `final_model_config.json`, `hmm_config.json`, `models/` (every compared model), `fold_models/` |
+| `results/` | CSV results, experiment log, Optuna SQLite studies, `figures/`, `maps/` (interactive Folium HTML) |
+| `tests/` | Unit tests, including a check that prediction never reads `.route` files |
+| `legacy_js_prototype/` | The team's first Node.js HMM prototype, kept for history |
+
+## Installation
+
+Requires Python 3.9 or newer. On macOS, LightGBM and XGBoost also need OpenMP: `brew install libomp`.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+The data is not committed. Put the organiser's `Student folder` next to the repository (`../Student folder/train`, `../Student folder/student_test`). To keep it somewhere else, set `export PATHSNAP_DATA=/path/to/Student\ folder`.
+
+## Reproducing every result
+
+```bash
+./run_all.sh
+```
+
+The script runs the tests and then scripts 01 to 07 in order, taking about 1.5 to 2 hours on an 8-core laptop, mostly model CV and Bayesian optimisation. Every number in the report is written to `results/` by these scripts. Seeds are fixed at 42.
+
+## Deployment: two-laptop evaluation
+
+### Laptop 1: API
+
+1. Copy the reserved evaluation trips to `<PATHSNAP_DATA>/evaluator_test/<trip_id>/...`. The API serves that partition. If it does not exist, the API falls back to `student_test` and logs a warning.
+2. Start the API:
+
+   ```bash
+   uvicorn api.main:app --host 0.0.0.0 --port 8000
    ```
 
-2. Obtain the organizer's `Student folder.zip` separately and extract it so the structure matches the example below. The dataset and video are excluded from Git.
-3. Run:
+3. Find the laptop's IP with `ipconfig getifaddr en0` on macOS or `ipconfig` on Windows. Allow incoming connections on port 8000 if the firewall asks.
 
-```sh
-npm test
-npm run audit
-npm run demo
+Every request is logged in this terminal, which is the log the evaluators ask to see. Each log line shows the client IP, endpoint, status, latency, and the trip's accuracy, route F1 and continuity.
+
+### Laptop 2: UI
+
+```bash
+python ui/serve.py --port 8080 --api http://<laptop1-ip>:8000
 ```
 
-Open `outputs/train/00000046/report.html` in your browser. The report supports pan, zoom, and toggling the GPS observations, reference, baseline, and HMM layers. It contains its own data and needs no internet connection. Play the trip or scrub through observations to see the raw and matched positions. Use Inspect next restart to center the map on a gap.
+This opens `http://localhost:8080`. The UI:
 
-```text
-project/
-  Student folder/
-    train/
-      00000001/
-        00000001.nodes
-        00000001.arcs
-        00000001.track
-        00000001.route
-      ...
-    student_test/
-      ...
-  src/
-  test/
-  docs/
-  package.json
+* lists the trips returned by `GET /trips`;
+* sends the selected trip ID to `POST /predict`;
+* draws the raw GPS, the predicted route, the classifier-only route and the matched positions on a Leaflet map with layer controls;
+* shows the scores computed on the server.
+
+**Evaluate all trips** runs every trip and builds a summary table. The *API request log* tab shows every call.
+
+### API endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/health` | Liveness check, host name, served partition |
+| GET | `/model` | Model type, features, tuned hyperparameters, HMM parameters |
+| GET | `/trips` | Trip IDs with observation count and duration. Reads GPS only. |
+| POST | `/predict` | `{"trip_id": "..."}`. Runs the full pipeline and returns the route geometry, matched points, timings and server-side metrics. |
+
+Quick check from any terminal:
+
+```bash
+curl -s http://<laptop1-ip>:8000/predict -H 'Content-Type: application/json' -d '{"trip_id":"00000056"}' | python -m json.tool | head -40
 ```
 
-No `npm install` step is needed. If the data is elsewhere, append `-- --data "path/to/Student folder"` to an npm command.
+**Ground-truth isolation.** `Predictor.predict` never reads a `.route` file. `tests/test_core.py::test_prediction_never_reads_route` fails if it tries. The reference route is loaded only afterwards, inside `pipeline.evaluate` on the API laptop. Only aggregate scores leave the server: no reference geometry and no per-point labels.
 
-## Commands
+## Method summary
 
-```sh
-# Audit all inputs and training references; save a fixed split manifest.
-npm run audit
+* **Preprocessing.** Invalid coordinates and duplicate or out-of-order timestamps are dropped (none occur in the supplied data). Each trip is projected to a local equirectangular plane in metres, centred on the trip; distortion is under 0.1% at city scale. The road network is cropped to the track's bounding box plus 1.5 km.
+* **Labels.** `.route` files are ordered arc lists without timestamps. Each GPS fix is assigned a reference arc by a monotone dynamic-programming alignment (`labels.py`). Fixes more than 50 m from their aligned arc are excluded from fitting and scoring, because some reference routes cover only part of the GPS trace.
+* **Candidates.** Up to 12 directed arcs within 60 m of each fix, found with a densified-segment KD-tree. The radius doubles up to 250 m when nothing is found.
+* **Features.** 27 features per (fix, candidate):
+  * distance, plus its rank and ratio against the other candidates;
+  * heading agreement over short and long windows (this resolves direction on two-way streets);
+  * speed, turn rate and time gap;
+  * position along the arc;
+  * node degrees and two-way flag;
+  * how well the arc explains the neighbouring fixes (±2, 5, 10);
+  * signed motion along the arc direction.
+* **Classifier.** Binary "is this candidate the reference arc?". Probabilities are normalised over each fix's candidates.
+* **HMM.**
+  * Hidden states are the candidate arcs.
+  * Emission is the classifier probability raised to a weight.
+  * Transition is `exp(-|route distance - GPS distance| / β)`, using bounded Dijkstra on the directed graph, with a U-turn penalty, a speed limit and a backward-motion tolerance.
+  * Viterbi decoding restarts at large time gaps or when every transition is impossible.
+  * Consecutive matched arcs are joined by shortest paths into one route.
 
-# Inspect a labeled training trip.
-node src/cli.js run --id 00000001
+## Metrics
 
-# Evaluate all 16 validation trips with fixed defaults.
-npm run evaluate
+* **Observation-level top-1 accuracy:** the best candidate equals the aligned reference arc. Fixes whose reference arc is not among the candidates count as errors.
+* **Macro F1 / precision / recall:** candidate-level binary decisions (top-1 = positive), macro-averaged over {other, reference}.
+* **Log loss:** binary cross-entropy of the candidate probabilities.
+* **Candidate miss rate:** share of scored fixes whose reference arc is not among the candidates.
+* **Route continuity:** share of consecutive fixes whose predicted arcs are equal or reachable by a plausible-length directed path.
+* **Route F1 (length weighted)** and **ordered route F1** (LCS based) between the predicted and reference arc sequences.
 
-# Use development trips for tuning; keep the validation split fixed.
-npm run evaluate -- --subset development
+## AI assistance disclosure
 
-# Small development run.
-npm run evaluate -- --subset development --limit 3
-
-# Try every GPS point instead of every fifth point.
-node src/cli.js run --id 00000046 --stride 1
-
-# Tune on development trips only.
-npm run evaluate -- --subset development --sigma 20 --beta 30 --candidates 4
-
-# Generate baseline and HMM predictions for the 10 student-test trips.
-npm run predict
-```
-
-Predictions are saved to `outputs/<split>/<trip-id>/{baseline,hmm}.json`. Labeled runs also create `report.html`. Aggregate evaluation goes to `outputs/evaluation-validation.json` or `outputs/evaluation-development.json`. Outputs are ignored by Git and can be reproduced locally.
-
-## File formats verified from the supplied data
-
-All files are whitespace-delimited and have no headers. IDs are **local to each trip**.
-
-| Extension | Each row means |
-| --- | --- |
-| `.nodes` | Longitude, latitude. Its zero-based row number is the node ID. |
-| `.arcs` | Source node ID, destination node ID. Its zero-based row number is the directed arc ID. |
-| `.track` | Longitude, latitude, timestamp. Timestamp units are unconfirmed. |
-| `.route` | A zero-based directed arc ID in reference traversal order. |
-
-The training data contains 80 trips and 208,417 GPS observations. Student-test contains 10 trips and 19,160 observations. All checked graph endpoints and training route IDs are valid. There are 13 disconnected consecutive-arc steps across training reference routes. See `outputs/audit.json` for their positions.
-
-Student-test includes `.route` files, but their intended role is unclear. **The reusable prediction and audit commands never open student-test route files.** Ask the organizers what those files are intended for before using them. Training references are loaded only after prediction for evaluation and plotting.
-
-## How the methods work
-
-Both methods use the same sampled GPS observations: every fifth row by default, always including the first and last. `--stride 1` uses every observation; stride counts rows, not seconds. Coordinates are projected to an approximate local plane in meters using the first road node as origin.
-
-- **Baseline:** project each observation onto its nearest road segment. Distance ties between opposite directions use arc ID order; this baseline has no heading or connectivity logic. Remove consecutive duplicate arc IDs. It does not fill gaps between matched observations.
-- **HMM:** consider the nearest eight distinct physical segments, retaining their directed alternatives. Score candidates by GPS-to-segment distance (Gaussian noise scale `sigma=20` meters). Score transitions by the difference between road travel distance and observed straight-line displacement (`beta=30` meters). Directed shortest paths provide travel distances and connecting arcs. Viterbi decoding selects a sequence, and connecting paths reconstruct the route.
-
-Candidate searches expand from 50 meters to at most 6.4 kilometers. Shortest-path searches are bounded to `max(500, 4 × GPS displacement + 200)` meters. If an entire step has no feasible candidate transition, the matcher explicitly restarts and records a gap. Timestamp values are not used to enforce speed limits because their unit is unconfirmed.
-
-Background: [Newson and Krumm, Hidden Markov Map Matching Through Noise and Sparseness](https://www.microsoft.com/en-us/research/publication/hidden-markov-map-matching-noise-sparseness/).
-
-## Evaluation and current results
-
-The organizers have not supplied a scoring metric. Our measures are project-defined:
-
-- **Directed arc precision/recall/F1:** overlap between the sets of predicted and reference arc IDs.
-- **Physical-road F1:** the same overlap after treating a node pair and its reverse as one road segment.
-- **Disconnected steps:** predicted consecutive arc pairs whose destination/source nodes do not connect.
-- **Runtime:** matching time per trip, with graph-building time recorded separately.
-
-Precision is intersection size divided by predicted set size; recall divides by reference set size. F1 is their harmonic mean. Aggregate F1 is the unweighted mean across trips. Set overlap does **not** assess traversal order, repeat visits, or complete-route correctness. Physical-road overlap also ignores direction. GPS-to-road distance is a diagnostic, not an accuracy score.
-
-Trips are sorted by ID; every fifth trip, starting at index zero, is assigned to validation (16 trips). The other 64 are for development. This split is deterministic but is not guaranteed to separate overlapping geographic areas.
-
-Results on the fixed 16-trip validation split
-
-| Method | Mean directed F1 | Mean physical-road F1 | Mean ordered F1 | Total disconnected steps |
-| --- | ---: | ---: | ---: | ---: |
-| Nearest-road baseline | 50.12% | 67.30% | 45.63% | 2,791 |
-| Original HMM | 94.65% | 95.92% | 92.93% | 65 |
-| Updated HMM | 96.02% | 97.00% | 95.52% | 11 |
-
-These are local validation results, not official scores. Ten of the eleven remaining disconnected steps are on trip 00000043. One occurs on trip 00000075. Some restarts occur on a repeated arc and do not create a disconnected pair in the deduplicated route. Runtime depends on the machine and excludes report rendering.
-
-## Reproduce the comparison
-
-Run `npm run benchmark` with the organizer data extracted. The script ranks four configurations by mean ordered F1 across 64 development trips. It evaluates the development winner and original settings on the 16 validation trips previously used to report the original model. Full results and trip IDs are written to `outputs/benchmark.json`.
-
-Ordered F1 equals twice the length of the longest common subsequence of directed arc IDs divided by the combined lengths of the predicted and reference sequences. It penalizes missing, extra and out-of-order visits. In development, allowing up to 15 meters of backward projection on the same arc raised ordered F1 from 88.54% to 92.27%. Considering eight nearby segments raised it to 93.98%. Sampling every third observation with those settings scored 92.29%, so we retained every fifth observation. On validation, the selected matcher took about 31 milliseconds per trip on the development machine, compared with about 14 milliseconds for the original matcher, excluding graph construction.
-
-## Team workflow
-
-Create feature branches and use pull requests. Keep the source, tests, and documentation in Git. Each teammate keeps a local copy of the dataset. Run `npm test` before opening a PR and include development-set results when changing matching logic. Keep parameter tuning on the development subset, and label any later validation-driven changes honestly.
-
-Suggested independent work areas:
-
-| Work area | First task |
-| --- | --- |
-| Data and evaluation | Investigate reference gaps and add an order-aware route measure. |
-| Matching | Reduce restarts using adaptive candidate radii and graph-aware recovery. |
-| Visualization and presentation | Inspect reports and build a clear successful/difficult-trip comparison. |
-
-See [docs/NEXT_STEPS.md](docs/NEXT_STEPS.md) for the remaining work. Do not upload the organizer's data publicly until its sharing terms are known.
-
-## Code map
-
-| File | Responsibility |
-| --- | --- |
-| `src/data.js` | Data loading, separate reference loading, deterministic split |
-| `src/graph.js` | Local projection, spatial segment index, directed shortest paths |
-| `src/match.js` | Baseline, HMM decoding, evaluation |
-| `src/report.js` | Self-contained interactive HTML report |
-| `src/cli.js` | Audit, demo, evaluation, and prediction commands |
-| `test/matching.test.js` | Geometry, missing-road reconstruction, direction, and gap tests |
+Parts of this codebase were written with an AI coding assistant. Each team member must understand, run and be able to explain the code and results, and must disclose AI use as the event's policy requires. The report must be written by the team from its own analysis of these results.

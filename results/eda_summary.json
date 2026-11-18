@@ -1,0 +1,96 @@
+{
+  "student_test": {
+    "trips": 10,
+    "observations": 19160,
+    "obs_per_trip": {
+      "count": 10.0,
+      "mean": 1916.0,
+      "std": 1335.4,
+      "min": 262.0,
+      "25%": 917.8,
+      "50%": 1420.0,
+      "75%": 2872.0,
+      "max": 3958.0
+    },
+    "nodes_per_trip": {
+      "count": 10.0,
+      "mean": 9068.9,
+      "std": 7452.2,
+      "min": 1770.0,
+      "25%": 4908.0,
+      "50%": 6596.5,
+      "75%": 11844.2,
+      "max": 26635.0
+    },
+    "arcs_per_trip": {
+      "count": 10.0,
+      "mean": 18504.1,
+      "std": 15496.9,
+      "min": 3577.0,
+      "25%": 10292.2,
+      "50%": 13145.0,
+      "75%": 24818.5,
+      "max": 56027.0
+    },
+    "pct_steps_1s": 0.9862140992167102,
+    "nan_values": 0,
+    "duplicate_timestamps": 0,
+    "non_monotonic": 0,
+    "trips_with_gap_gt60s": 1,
+    "max_gap_s": 210.0,
+    "route_disconnected_steps": 1,
+    "route_steps": 3467,
+    "trips_multi_weak_component": 10,
+    "isolated_nodes": 0,
+    "mean_candidate_miss_rate": 0.0016459400411263814,
+    "mean_unreliable_label_frac": 0.000682162708438605,
+    "nearest_arc_top1_mean": 0.5581969021158015
+  },
+  "train": {
+    "trips": 80,
+    "observations": 208417,
+    "obs_per_trip": {
+      "count": 80.0,
+      "mean": 2605.2,
+      "std": 3312.3,
+      "min": 361.0,
+      "25%": 945.8,
+      "50%": 1529.0,
+      "75%": 2792.8,
+      "max": 19313.0
+    },
+    "nodes_per_trip": {
+      "count": 80.0,
+      "mean": 24168.6,
+      "std": 32272.3,
+      "min": 299.0,
+      "25%": 3487.8,
+      "50%": 9608.0,
+      "75%": 28846.8,
+      "max": 155003.0
+    },
+    "arcs_per_trip": {
+      "count": 80.0,
+      "mean": 48461.3,
+      "std": 64738.8,
+      "min": 649.0,
+      "25%": 7061.8,
+      "50%": 19526.5,
+      "75%": 58003.2,
+      "max": 307392.0
+    },
+    "pct_steps_1s": 0.96503741534149,
+    "nan_values": 0,
+    "duplicate_timestamps": 0,
+    "non_monotonic": 0,
+    "trips_with_gap_gt60s": 22,
+    "max_gap_s": 153064.0,
+    "route_disconnected_steps": 13,
+    "route_steps": 31256,
+    "trips_multi_weak_component": 79,
+    "isolated_nodes": 0,
+    "mean_candidate_miss_rate": 0.025366594215095278,
+    "mean_unreliable_label_frac": 0.02486439736403668,
+    "nearest_arc_top1_mean": 0.5704798595736212
+  }
+}

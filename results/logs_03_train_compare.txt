@@ -1,0 +1,90 @@
+== LogisticRegression
+   fold 0: macroF1=0.9481 top1=0.9056 ll=0.0744 (0.6s)
+   fold 1: macroF1=0.9315 top1=0.8805 ll=0.0940 (0.6s)
+   fold 2: macroF1=0.9496 top1=0.9107 ll=0.0727 (0.7s)
+   fold 3: macroF1=0.9352 top1=0.8778 ll=0.0809 (0.5s)
+   fold 4: macroF1=0.9516 top1=0.9158 ll=0.0768 (0.7s)
+   TEST {'model': 'LogisticRegression', 'family': 'Linear / probabilistic', 'config': 'StandardScaler + L2, C=1.0', 'cv_macro_f1': np.float64(0.9432), 'cv_macro_f1_std': np.float64(0.0082), 'cv_top1': np.float64(0.8981), 'cv_log_loss': np.float64(0.0797), 'test_top1': 0.889, 'test_macro_f1': 0.9372, 'test_precision': 0.937, 'test_recall': 0.9373, 'test_log_loss': 0.0775, 'test_miss_rate': 0.0007, 'route_continuity': 0.9353, 'train_time_s': 0.7691, 'infer_ms_per_1k_obs': 0.7917, 'train_top1': 0.9002, 'train_macro_f1': 0.9442, 'obs_frac': 1.0}
+== GaussianNB
+   fold 0: macroF1=0.9271 top1=0.8691 ll=0.3141 (0.8s)
+   fold 1: macroF1=0.9108 top1=0.8446 ll=0.6026 (0.7s)
+   fold 2: macroF1=0.9353 top1=0.8856 ll=0.3507 (0.7s)
+   fold 3: macroF1=0.9052 top1=0.8249 ll=0.5078 (0.7s)
+   fold 4: macroF1=0.9296 top1=0.8782 ll=0.7415 (0.7s)
+   TEST {'model': 'GaussianNB', 'family': 'Linear / probabilistic', 'config': 'QuantileTransformer(normal) + GaussianNB', 'cv_macro_f1': np.float64(0.9216), 'cv_macro_f1_std': np.float64(0.0115), 'cv_top1': np.float64(0.8605), 'cv_log_loss': np.float64(0.5034), 'test_top1': 0.8453, 'test_macro_f1': 0.9124, 'test_precision': 0.9122, 'test_recall': 0.9125, 'test_log_loss': 0.5701, 'test_miss_rate': 0.0007, 'route_continuity': 0.8985, 'train_time_s': 0.9122, 'infer_ms_per_1k_obs': 15.4069, 'train_top1': 0.8629, 'train_macro_f1': 0.9227, 'obs_frac': 1.0}
+== KNN
+   fold 0: macroF1=0.9378 top1=0.8878 ll=0.0925 (0.0s)
+   fold 1: macroF1=0.9268 top1=0.8723 ll=0.1163 (0.0s)
+   fold 2: macroF1=0.9489 top1=0.9093 ll=0.0860 (0.0s)
+   fold 3: macroF1=0.9263 top1=0.8620 ll=0.1049 (0.0s)
+   fold 4: macroF1=0.9449 top1=0.9044 ll=0.0951 (0.0s)
+   TEST {'model': 'KNN', 'family': 'Instance-based', 'config': 'k=40, distance-weighted, standardised, 25% obs', 'cv_macro_f1': np.float64(0.9369), 'cv_macro_f1_std': np.float64(0.0092), 'cv_top1': np.float64(0.8871), 'cv_log_loss': np.float64(0.099), 'test_top1': 0.8793, 'test_macro_f1': 0.9316, 'test_precision': 0.9315, 'test_recall': 0.9318, 'test_log_loss': 0.094, 'test_miss_rate': 0.0007, 'route_continuity': 0.926, 'train_time_s': 0.0279, 'infer_ms_per_1k_obs': 554.97, 'train_top1': 0.9238, 'train_macro_f1': 0.9578, 'obs_frac': 0.25}
+== DecisionTree
+   fold 0: macroF1=0.9434 top1=0.8973 ll=0.0860 (6.6s)
+   fold 1: macroF1=0.9289 top1=0.8760 ll=0.1137 (6.0s)
+   fold 2: macroF1=0.9468 top1=0.9057 ll=0.0782 (6.0s)
+   fold 3: macroF1=0.9295 top1=0.8676 ll=0.0978 (6.0s)
+   fold 4: macroF1=0.9479 top1=0.9095 ll=0.0913 (5.9s)
+   TEST {'model': 'DecisionTree', 'family': 'Tree-based', 'config': 'max_depth=12, min_samples_leaf=50', 'cv_macro_f1': np.float64(0.9393), 'cv_macro_f1_std': np.float64(0.0084), 'cv_top1': np.float64(0.8913), 'cv_log_loss': np.float64(0.0934), 'test_top1': 0.8888, 'test_macro_f1': 0.937, 'test_precision': 0.9369, 'test_recall': 0.9372, 'test_log_loss': 0.0811, 'test_miss_rate': 0.0007, 'route_continuity': 0.9264, 'train_time_s': 7.7832, 'infer_ms_per_1k_obs': 0.3754, 'train_top1': 0.9239, 'train_macro_f1': 0.9578, 'obs_frac': 1.0}
+== RandomForest
+   fold 0: macroF1=0.9463 top1=0.9025 ll=0.0631 (84.1s)
+   fold 1: macroF1=0.9324 top1=0.8820 ll=0.0778 (74.3s)
+   fold 2: macroF1=0.9509 top1=0.9128 ll=0.0537 (71.7s)
+   fold 3: macroF1=0.9339 top1=0.8754 ll=0.0706 (69.9s)
+   fold 4: macroF1=0.9484 top1=0.9103 ll=0.0599 (64.0s)
+   TEST {'model': 'RandomForest', 'family': 'Ensemble (bagging)', 'config': '300 trees, max_depth=20, min_leaf=10, sqrt features', 'cv_macro_f1': np.float64(0.9424), 'cv_macro_f1_std': np.float64(0.0077), 'cv_top1': np.float64(0.8966), 'cv_log_loss': np.float64(0.065), 'test_top1': 0.8979, 'test_macro_f1': 0.9422, 'test_precision': 0.9421, 'test_recall': 0.9423, 'test_log_loss': 0.0626, 'test_miss_rate': 0.0007, 'route_continuity': 0.9337, 'train_time_s': 97.9466, 'infer_ms_per_1k_obs': 25.5993, 'train_top1': 0.9459, 'train_macro_f1': 0.9705, 'obs_frac': 1.0}
+== ExtraTrees
+   fold 0: macroF1=0.9450 top1=0.9002 ll=0.0672 (14.3s)
+   fold 1: macroF1=0.9310 top1=0.8796 ll=0.0800 (11.9s)
+   fold 2: macroF1=0.9491 top1=0.9098 ll=0.0578 (11.8s)
+   fold 3: macroF1=0.9342 top1=0.8761 ll=0.0749 (11.0s)
+   fold 4: macroF1=0.9500 top1=0.9131 ll=0.0642 (10.6s)
+   TEST {'model': 'ExtraTrees', 'family': 'Ensemble (bagging)', 'config': '300 trees, max_depth=22, min_leaf=10', 'cv_macro_f1': np.float64(0.9419), 'cv_macro_f1_std': np.float64(0.0078), 'cv_top1': np.float64(0.8957), 'cv_log_loss': np.float64(0.0688), 'test_top1': 0.889, 'test_macro_f1': 0.9372, 'test_precision': 0.937, 'test_recall': 0.9373, 'test_log_loss': 0.0669, 'test_miss_rate': 0.0007, 'route_continuity': 0.933, 'train_time_s': 14.5859, 'infer_ms_per_1k_obs': 25.6922, 'train_top1': 0.9247, 'train_macro_f1': 0.9583, 'obs_frac': 1.0}
+== HistGradientBoosting
+   fold 0: macroF1=0.9447 top1=0.8997 ll=0.0675 (1.8s)
+   fold 1: macroF1=0.9306 top1=0.8789 ll=0.0856 (1.7s)
+   fold 2: macroF1=0.9530 top1=0.9166 ll=0.0585 (1.8s)
+   fold 3: macroF1=0.9357 top1=0.8786 ll=0.0721 (2.0s)
+   fold 4: macroF1=0.9481 top1=0.9099 ll=0.0659 (1.4s)
+   TEST {'model': 'HistGradientBoosting', 'family': 'Boosting', 'config': 'lr=0.1, max_iter=300, max_leaf_nodes=31', 'cv_macro_f1': np.float64(0.9424), 'cv_macro_f1_std': np.float64(0.0082), 'cv_top1': np.float64(0.8967), 'cv_log_loss': np.float64(0.0699), 'test_top1': 0.9026, 'test_macro_f1': 0.9449, 'test_precision': 0.9447, 'test_recall': 0.945, 'test_log_loss': 0.0644, 'test_miss_rate': 0.0007, 'route_continuity': 0.9329, 'train_time_s': 1.8791, 'infer_ms_per_1k_obs': 4.7467, 'train_top1': 0.9272, 'train_macro_f1': 0.9598, 'obs_frac': 1.0}
+== LightGBM
+   fold 0: macroF1=0.9500 top1=0.9089 ll=0.0601 (6.0s)
+   fold 1: macroF1=0.9328 top1=0.8828 ll=0.0836 (4.2s)
+   fold 2: macroF1=0.9559 top1=0.9216 ll=0.0548 (4.2s)
+   fold 3: macroF1=0.9369 top1=0.8807 ll=0.0704 (4.2s)
+   fold 4: macroF1=0.9500 top1=0.9131 ll=0.0617 (4.2s)
+   TEST {'model': 'LightGBM', 'family': 'Boosting', 'config': '400 trees, lr=0.05, 63 leaves (untuned)', 'cv_macro_f1': np.float64(0.9451), 'cv_macro_f1_std': np.float64(0.0088), 'cv_top1': np.float64(0.9014), 'cv_log_loss': np.float64(0.0661), 'test_top1': 0.9138, 'test_macro_f1': 0.9512, 'test_precision': 0.9511, 'test_recall': 0.9514, 'test_log_loss': 0.0574, 'test_miss_rate': 0.0007, 'route_continuity': 0.9393, 'train_time_s': 4.8496, 'infer_ms_per_1k_obs': 30.6295, 'train_top1': 0.9579, 'train_macro_f1': 0.9774, 'obs_frac': 1.0}
+== XGBoost
+   fold 0: macroF1=0.9496 top1=0.9081 ll=0.0597 (2.9s)
+   fold 1: macroF1=0.9312 top1=0.8800 ll=0.0818 (2.8s)
+   fold 2: macroF1=0.9554 top1=0.9208 ll=0.0545 (2.7s)
+   fold 3: macroF1=0.9378 top1=0.8824 ll=0.0687 (3.1s)
+   fold 4: macroF1=0.9514 top1=0.9155 ll=0.0605 (3.6s)
+   TEST {'model': 'XGBoost', 'family': 'Boosting', 'config': '400 trees, lr=0.05, depth=7, hist', 'cv_macro_f1': np.float64(0.9451), 'cv_macro_f1_std': np.float64(0.0091), 'cv_top1': np.float64(0.9014), 'cv_log_loss': np.float64(0.065), 'test_top1': 0.9117, 'test_macro_f1': 0.95, 'test_precision': 0.9499, 'test_recall': 0.9502, 'test_log_loss': 0.0585, 'test_miss_rate': 0.0007, 'route_continuity': 0.9393, 'train_time_s': 3.5333, 'infer_ms_per_1k_obs': 8.7715, 'train_top1': 0.956, 'train_macro_f1': 0.9763, 'obs_frac': 1.0}
+== LinearSVM_RBF_Nystroem
+   fold 0: macroF1=0.9459 top1=0.9018 ll=0.0752 (6.9s)
+   fold 1: macroF1=0.9331 top1=0.8833 ll=0.0893 (5.9s)
+   fold 2: macroF1=0.9497 top1=0.9108 ll=0.0676 (6.1s)
+   fold 3: macroF1=0.9334 top1=0.8746 ll=0.0783 (6.3s)
+   fold 4: macroF1=0.9481 top1=0.9097 ll=0.0810 (6.1s)
+   TEST {'model': 'LinearSVM_RBF_Nystroem', 'family': 'Kernel-based', 'config': 'Nystroem RBF(400 comps) + LinearSVC + sigmoid calib., 25% obs', 'cv_macro_f1': np.float64(0.942), 'cv_macro_f1_std': np.float64(0.0073), 'cv_top1': np.float64(0.8961), 'cv_log_loss': np.float64(0.0783), 'test_top1': 0.8826, 'test_macro_f1': 0.9335, 'test_precision': 0.9334, 'test_recall': 0.9336, 'test_log_loss': 0.0775, 'test_miss_rate': 0.0007, 'route_continuity': 0.9343, 'train_time_s': 8.6864, 'infer_ms_per_1k_obs': 31.8772, 'train_top1': 0.9001, 'train_macro_f1': 0.9441, 'obs_frac': 0.25}
+== MLP
+   fold 0: macroF1=0.9473 top1=0.9042 ll=0.0756 (10.1s)
+   fold 1: macroF1=0.9321 top1=0.8815 ll=0.0951 (7.7s)
+   fold 2: macroF1=0.9520 top1=0.9148 ll=0.0664 (10.1s)
+   fold 3: macroF1=0.9315 top1=0.8712 ll=0.0786 (9.7s)
+   fold 4: macroF1=0.9483 top1=0.9102 ll=0.0801 (7.6s)
+   TEST {'model': 'MLP', 'family': 'Neural network', 'config': '128-64 ReLU, Adam lr=1e-3, early stopping, 50% obs', 'cv_macro_f1': np.float64(0.9422), 'cv_macro_f1_std': np.float64(0.0087), 'cv_top1': np.float64(0.8964), 'cv_log_loss': np.float64(0.0792), 'test_top1': 0.9042, 'test_macro_f1': 0.9458, 'test_precision': 0.9457, 'test_recall': 0.946, 'test_log_loss': 0.0666, 'test_miss_rate': 0.0007, 'route_continuity': 0.9362, 'train_time_s': 6.2285, 'infer_ms_per_1k_obs': 1.698, 'train_top1': 0.9236, 'train_macro_f1': 0.9577, 'obs_frac': 0.5}
+                     model                  family                                                         config  cv_macro_f1  cv_macro_f1_std   cv_top1  cv_log_loss  test_top1  test_macro_f1  test_precision  test_recall  test_log_loss  test_miss_rate  route_continuity  train_time_s  infer_ms_per_1k_obs  train_top1  train_macro_f1  obs_frac
+0   NearestRoad (baseline)               Heuristic                                  argmin perpendicular distance     0.753358         0.039489  0.568771          NaN   0.536246       0.736792        0.736717     0.736867            NaN        0.000732          0.802473      0.000000             0.001548         NaN             NaN       NaN
+1       LogisticRegression  Linear / probabilistic                                     StandardScaler + L2, C=1.0     0.943212         0.008215  0.898066     0.079741   0.889040       0.937182        0.937043     0.937320       0.077502        0.000732          0.935317      0.769064             0.791680    0.900160        0.944174      1.00
+2               GaussianNB  Linear / probabilistic                       QuantileTransformer(normal) + GaussianNB     0.921589         0.011545  0.860474     0.503351   0.845346       0.912363        0.912233     0.912493       0.570075        0.000732          0.898451      0.912237            15.406931    0.862923        0.922739      1.00
+3                      KNN          Instance-based                 k=40, distance-weighted, standardised, 25% obs     0.936927         0.009208  0.887146     0.098968   0.879266       0.931630        0.931494     0.931767       0.094042        0.000732          0.926030      0.027926           554.969987    0.923824        0.957796      0.25
+4             DecisionTree              Tree-based                              max_depth=12, min_samples_leaf=50     0.939299         0.008389  0.891260     0.093389   0.888779       0.937033        0.936895     0.937171       0.081073        0.000732          0.926379      7.783245             0.375418    0.923857        0.957815      1.00
+5             RandomForest      Ensemble (bagging)            300 trees, max_depth=20, min_leaf=10, sqrt features     0.942367         0.007697  0.896615     0.065025   0.897873       0.942199        0.942059     0.942339       0.062649        0.000732          0.933732     97.946579            25.599300    0.945885        0.970495      1.00
+6               ExtraTrees      Ensemble (bagging)                           300 trees, max_depth=22, min_leaf=10     0.941871         0.007817  0.895741     0.068809   0.889040       0.937182        0.937043     0.937320       0.066908        0.000732          0.932952     14.585944            25.692156    0.924699        0.958300      1.00
+7     HistGradientBoosting                Boosting                        lr=0.1, max_iter=300, max_leaf_nodes=31     0.942434         0.008193  0.896745     0.069901   0.902577       0.944871        0.944730     0.945011       0.064425        0.000732          0.932894      1.879081             4.746708    0.927226        0.959754      1.00
+8                 LightGBM                Boosting                        400 trees, lr=0.05, 63 leaves (untuned)     0.945118         0.008766  0.901407     0.066105   0.913762       0.951224        0.951081     0.951367       0.057437        0.000732          0.939299      4.849571            30.629525    0.957936        0.977432      1.00
+9                  XGBoost                Boosting                              400 trees, lr=0.05, depth=7, hist     0.945095         0.009080  0.901362     0.065037   0.911671       0.950036        0.949894     0.950179       0.058469        0.000732          0.939343      3.533257             8.771468    0.956041        0.976341      1.00
+10  LinearSVM_RBF_Nystroem            Kernel-based  Nystroem RBF(400 comps) + LinearSVC + sigmoid calib., 25% obs     0.942044         0.007264  0.896051     0.078304   0.882559       0.933500        0.933363     0.933638       0.077514        0.000732          0.934318      8.686375            31.877218    0.900079        0.944128      0.25
+11                     MLP          Neural network             128-64 ReLU, Adam lr=1e-3, early stopping, 50% obs     0.942241         0.008686  0.896387     0.079173   0.904249       0.945821        0.945680     0.945962       0.066607        0.000732          0.936163      6.228524             1.698019    0.923582        0.957656      0.50
